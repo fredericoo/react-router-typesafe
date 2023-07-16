@@ -1,6 +1,6 @@
 {
 	"name": "react-router-typesafe",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"description": "type safe patches of react-router-dom",
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -12,9 +12,13 @@
 			"types": "./dist/index.d.ts"
 		}
 	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsup",
-		"test": "vitest"
+		"test": "vitest",
+		"release": "pnpm build && changeset publish"
 	},
 	"keywords": [
 		"react",
