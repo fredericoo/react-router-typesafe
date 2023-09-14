@@ -27,6 +27,14 @@ jobs:
           cache: 'pnpm'
           registry-url: https://npm.pkg.github.com/
 
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Install dependencies
         shell: bash
         run: pnpm install --frozen-lockfile

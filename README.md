@@ -57,12 +57,12 @@ Feel free to improve the code and submit a pull request. If you're not sure abou
 
 ## Patched functions
 
-| Status | Utility              | Before     | After                                                 |
-| ------ | -------------------- | ---------- | ----------------------------------------------------- |
-| ✅     | `defer`              | `Response` | Generic matching the first argument                   |
-| ✅     | `useLoaderData`      | `unknown`  | Generic function with the type of the loader function |
-| ✅     | `useActionData`      | `unknown`  | Generic function with the type of the action function |
-|        | `useRouteLoaderData` | `unknown`  |                                                       |
+| Status | Utility              | Before     | After                                                        |
+| ------ | -------------------- | ---------- | ------------------------------------------------------------ |
+| ✅     | `defer`              | `Response` | Generic matching the first argument                          |
+| ✅     | `useLoaderData`      | `unknown`  | Generic function with the type of the loader function passed |
+| ✅     | `useActionData`      | `unknown`  | Generic function with the type of the action function passed |
+| ✅     | `useRouteLoaderData` | `unknown`  | Generic function with the type of the loader function passed |
 
 ## About
 

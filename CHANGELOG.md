@@ -1,5 +1,12 @@
 # react-router-typesafe
 
+## 1.2.0
+
+### Minor Changes
+
+- Add `useLoaderData` hook types
+- Migrate from pnpm to bun
+
 ## 1.1.0
 
 ### Minor Changes
