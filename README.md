@@ -55,7 +55,7 @@ const action = makeAction(() => ({ ok: true }));
 
 Feel free to improve the code and submit a pull request. If you're not sure about something, create an issue first to discuss it.
 
-## Patched functions
+## Functions
 
 | Status | Utility              | Before     | After                                                        |
 | ------ | -------------------- | ---------- | ------------------------------------------------------------ |
@@ -63,6 +63,14 @@ Feel free to improve the code and submit a pull request. If you're not sure abou
 | ✅     | `useLoaderData`      | `unknown`  | Generic function with the type of the loader function passed |
 | ✅     | `useActionData`      | `unknown`  | Generic function with the type of the action function passed |
 | ✅     | `useRouteLoaderData` | `unknown`  | Generic function with the type of the loader function passed |
+| NEW    | `makeLoader`         | `unknown`  | Wrapper around `satisfies` for ergonomics                    |
+| NEW    | `makeAction`         | `unknown`  | Wrapper around `satisfies` for ergonomics                    |
+
+## Patched components
+
+| Status | Component | Before                                        | After                                         |
+| ------ | --------- | --------------------------------------------- | --------------------------------------------- |
+| ✅     | `<Await>` | children render props would be typed as `any` | Generic component makes render props typesafe |
 
 ## About
 

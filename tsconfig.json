@@ -17,6 +17,7 @@
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
 		"noImplicitAny": true,
+		"jsx": "react-jsx",
 		"types": ["bun-types"]
 	},
 	"exclude": ["node_modules"]
