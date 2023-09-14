@@ -11,21 +11,14 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
+      - uses: oven-sh/setup-bun@v1
         with:
-          version: 8
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-          registry-url: https://npm.pkg.github.com/
+          bun-version: latest
 
       - name: Creating .npmrc
         run: |
@@ -37,13 +30,13 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: pnpm install --frozen-lockfile
+        run: bun install
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm release
+          publish: bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
