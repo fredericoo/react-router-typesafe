@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.3.0
+
+### Minor Changes
+
+- 8355264: Patch <Await> component
+
 ## 1.2.0
 
 ### Minor Changes
