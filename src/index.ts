@@ -1,5 +1,5 @@
 export { defer } from './defer';
-export { type LoaderData, useLoaderData } from './loader';
+export { type LoaderData, useLoaderData, useRouteLoaderData } from './loader';
 export { type ActionData, useActionData } from './action';
 export { makeLoader, makeAction } from './utils';
 export * from './components';
