@@ -17,6 +17,6 @@ export type LoaderData<TLoaderFn extends LoaderFunction> = Awaited<ReturnType<TL
  */
 export const useLoaderData = rrUseLoaderData as <TLoaderFn extends LoaderFunction>() => LoaderData<TLoaderFn>;
 
-export const useRouteLoaderData = rrUseLoaderData as <TLoaderFn extends LoaderFunction>(
+export const useRouteLoaderData = rrUseRouteLoaderData as <TLoaderFn extends LoaderFunction>(
 	routeId: string,
 ) => LoaderData<TLoaderFn>;

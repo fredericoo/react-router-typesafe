@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.3.2
+
+### Patch Changes
+
+- Fixed re-export of useRouteLoaderData from mistakenly exporting useLoaderData to the right module
+
 ## 1.3.1
 
 ### Patch Changes
