@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.3.3
+
+### Patch Changes
+
+- a85b1a7: Add link to github repo to npm
+
 ## 1.3.2
 
 ### Patch Changes
