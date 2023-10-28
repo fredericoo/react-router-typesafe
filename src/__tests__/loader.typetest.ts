@@ -1,5 +1,5 @@
 import { test } from 'bun:test';
-import { LoaderFunction, redirect } from 'react-router-dom';
+import { LoaderFunction, json, redirect } from 'react-router-dom';
 import { useLoaderData } from '..';
 /** TODO: wait for feedback on issue about act-compat importing deprecated "react-dom/test-utils" */
 import { renderHook } from '@testing-library/react';
@@ -57,7 +57,7 @@ test('works with redirects', () => {
 	expectTypeOf(result.current).toEqualTypeOf<{ foo: string }>();
 });
 
-test.skip('routeLoaderData works the same way as useLoaderData', () => {
+test('routeLoaderData works the same way as useLoaderData', () => {
 	const testLoader = (() => {
 		if (Math.random() > 0.5) {
 			return redirect('/foo');

@@ -60,11 +60,12 @@ Feel free to improve the code and submit a pull request. If you're not sure abou
 | Status | Utility              | Before     | After                                                        |
 | ------ | -------------------- | ---------- | ------------------------------------------------------------ |
 | ✅     | `defer`              | `Response` | Generic matching the first argument                          |
+|        | `json`               | `Response` | Serialized data passed in                                    |
 | ✅     | `useLoaderData`      | `unknown`  | Generic function with the type of the loader function passed |
 | ✅     | `useActionData`      | `unknown`  | Generic function with the type of the action function passed |
 | ✅     | `useRouteLoaderData` | `unknown`  | Generic function with the type of the loader function passed |
-| NEW    | `makeLoader`         | `unknown`  | Wrapper around `satisfies` for ergonomics                    |
-| NEW    | `makeAction`         | `unknown`  | Wrapper around `satisfies` for ergonomics                    |
+| NEW    | `makeLoader`         |            | Wrapper around `satisfies` for ergonomics                    |
+| NEW    | `makeAction`         |            | Wrapper around `satisfies` for ergonomics                    |
 
 ## Patched components
 

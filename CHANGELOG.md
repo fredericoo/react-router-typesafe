@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.3.4
+
+### Patch Changes
+
+- `useActionData` now ignores Response objects as expected
+
 ## 1.3.3
 
 ### Patch Changes
