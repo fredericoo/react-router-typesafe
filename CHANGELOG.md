@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.4.0
+
+### Minor Changes
+
+- ce9bf9d: Added new utility `typesafeBrowserRouter`
+
 ## 1.3.4
 
 ### Patch Changes
