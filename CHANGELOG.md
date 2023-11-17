@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.4.1
+
+### Patch Changes
+
+- 8917a9d: `typesafeBrowserRouter`: no longer requires `pathParams` to be passed as an empty object when route does not have dynamic segments
+
 ## 1.4.0
 
 ### Minor Changes
