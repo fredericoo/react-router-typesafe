@@ -39,7 +39,9 @@ const Component = () => {
 > **Warning**
 > Do not annotate the type of the loader/action function. It will break the type-safety. Instead rely on either the `satisfies` keyword from Typescript 4.9 onwards, or the `makeLoader` / `makeAction` utilities proveded by this library.
 
-### Utilities
+## Utilities
+
+### makeLoader / makeAction
 
 The `makeLoader` and `makeAction` utils replace the need for the `satisfies` keyword without adding any runtime overhead.
 
@@ -51,21 +53,61 @@ const loader = makeLoader(() => ({ message: 'Hello World' }));
 const action = makeAction(() => ({ ok: true }));
 ```
 
+### typesafeBrowserRouter ❇️ NEW
+
+The `typesafeBrowserRouter` is a wrapper around `createBrowserRoute` that returns a `href` function in addition to the routes.
+
+It’s easy to incrementally adopt, and you can use `href` anywhere, not just in `<Link>` components.
+
+Set up your routes like this:
+
+```diff
+- import { createBrowserRouter } from "react-router-dom";
++ import { typesafeBrowserRouter } from "react-router-typesafe";
+
+- export const router = createBrowserRouter([
++ export const { router, href } = typesafeBrowserRouter([
+  { path: "/", Component: HomePage },
+  { path: "/projects/:projectId", Component: ProjectPage },
+]);
+```
+
+- ✅ No need to change your existing `<Link>` components.
+- ✅ URL params are inferred and type-checked.
+- ✅ Supports query params and URL hash
+- ✅ Refactor-friendly: **Rename Symbol** on the route path and it’ll be updated everywhere.
+
+Then use `href` to generate URLs:
+
+```tsx
+import { Link } from 'react-router-dom';
+import { href } from './router';
+
+const ProjectCard = (props: { id: string }) => {
+	return (
+		<Link to={href({ path: '/projects/:projectId', query: { projectId: props.id } })}>
+			<p>Project {projectId}</p>
+		</Link>
+	);
+};
+```
+
 ## Contributing
 
 Feel free to improve the code and submit a pull request. If you're not sure about something, create an issue first to discuss it.
 
 ## Functions
 
-| Status | Utility              | Before     | After                                                        |
-| ------ | -------------------- | ---------- | ------------------------------------------------------------ |
-| ✅     | `defer`              | `Response` | Generic matching the first argument                          |
-|        | `json`               | `Response` | Serialized data passed in                                    |
-| ✅     | `useLoaderData`      | `unknown`  | Generic function with the type of the loader function passed |
-| ✅     | `useActionData`      | `unknown`  | Generic function with the type of the action function passed |
-| ✅     | `useRouteLoaderData` | `unknown`  | Generic function with the type of the loader function passed |
-| NEW    | `makeLoader`         |            | Wrapper around `satisfies` for ergonomics                    |
-| NEW    | `makeAction`         |            | Wrapper around `satisfies` for ergonomics                    |
+| Status | Utility                 | Before     | After                                                        |
+| ------ | ----------------------- | ---------- | ------------------------------------------------------------ |
+| ✅     | `defer`                 | `Response` | Generic matching the first argument                          |
+|        | `json`                  | `Response` | Serialized data passed in                                    |
+| ✅     | `useLoaderData`         | `unknown`  | Generic function with the type of the loader function passed |
+| ✅     | `useActionData`         | `unknown`  | Generic function with the type of the action function passed |
+| ✅     | `useRouteLoaderData`    | `unknown`  | Generic function with the type of the loader function passed |
+| NEW    | `makeLoader`            |            | Wrapper around `satisfies` for ergonomics                    |
+| NEW    | `makeAction`            |            | Wrapper around `satisfies` for ergonomics                    |
+| NEW    | `typesafeBrowserRouter` |            | Extension of `createBrowserRouter`                           |
 
 ## Patched components
 
