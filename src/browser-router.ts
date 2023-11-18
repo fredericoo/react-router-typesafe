@@ -1,15 +1,11 @@
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
 
-/** No deps implementation of F.Narrow from 'ts-toolbelt'  */
-type Try<A1 extends any, A2 extends any, Catch = never> = A1 extends A2 ? A1 : Catch;
 type Narrowable = string | number | bigint | boolean;
-type NarrowRaw<A> =
-	| (A extends [] ? [] : never)
+type NarrowKeys<A> =
 	| (A extends Narrowable ? A : never)
-	| {
-			[K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>;
-	  };
-type Narrow<A extends any> = Try<A, [], NarrowRaw<A>>;
+	| { [K in keyof A]: A[K] extends Function ? A[K] : NarrowKeys<A[K]> };
+
+type NarrowArray<A> = NarrowKeys<A>[];
 
 type Flatten<T> = { [K in keyof T]: T[K] } & {};
 
@@ -21,9 +17,16 @@ type ExtractParams<Path> = Path extends `${infer Segment}/${infer Rest}`
 	? ExtractParam<Segment, ExtractParams<Rest>>
 	: ExtractParam<Path, {}>;
 
-type ExtractPaths<Route extends RouteObject> = Route extends { children: infer C extends RouteObject[] }
-	? Route['path'] | ExtractPaths<C[number]>
-	: Route['path'];
+type ExtractPaths<Route extends RouteObject> = Route extends {
+	children: infer C extends RouteObject[];
+	path: infer P extends string;
+}
+	? P | ExtractPaths<C[number]>
+	: Route extends { children: infer C extends RouteObject[] }
+	? ExtractPaths<C[number]>
+	: Route extends { path: infer P extends string }
+	? P
+	: never;
 
 type TypesafeSearchParams = Record<string, string> | URLSearchParams;
 export type RouteExtraParams = { hash?: string; searchParams?: TypesafeSearchParams };
@@ -33,7 +36,7 @@ const joinValidWith =
 	(...valid: any[]) =>
 		valid.filter(Boolean).join(separator);
 
-export const typesafeBrowserRouter = <R extends RouteObject>(routes: Narrow<R[]>) => {
+export const typesafeBrowserRouter = <R extends RouteObject>(routes: NarrowArray<R>) => {
 	function href<P extends ExtractPaths<R>>(
 		params: { path: Extract<P, string> } & PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {
