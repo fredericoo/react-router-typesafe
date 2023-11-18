@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.4.4
+
+### Patch Changes
+
+- 1093a48: `typesafeBrowserRouter`: cache union of all paths in router scope
+
 ## 1.4.3
 
 ### Patch Changes
