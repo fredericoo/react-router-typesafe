@@ -6,7 +6,7 @@ test('returns pathname with replaced params', () => {
 		{ path: '/blog', children: [{ path: '/blog/:postId', children: [{ path: '/blog/:postId/:commentId' }] }] },
 	]);
 
-	const output = href('/blog/:postId/:commentId', { params: { postId: 'foo', commentId: 'bar' } });
+	const output = href({ path: '/blog/:postId/:commentId', params: { postId: 'foo', commentId: 'bar' } });
 
 	expect(output).toEqual('/blog/foo/bar');
 });
@@ -27,7 +27,7 @@ test('Returns right paths with pathless routes with children', () => {
 		},
 	]);
 
-	const output = href('/blog/:postId/:commentId', { params: { postId: 'foo', commentId: 'bar' } });
+	const output = href({ path: '/blog/:postId/:commentId', params: { postId: 'foo', commentId: 'bar' } });
 
 	expect(output).toEqual('/blog/foo/bar');
 });
@@ -35,7 +35,7 @@ test('Returns right paths with pathless routes with children', () => {
 test('returns pathname with search params if object is passed', () => {
 	const { href } = typesafeBrowserRouter([{ path: '/blog', children: [{ path: '/blog/:postId' }] }]);
 
-	const output = href('/blog/:postId', { params: { postId: 'foo' }, searchParams: { foo: 'bar' } });
+	const output = href({ path: '/blog/:postId', params: { postId: 'foo' }, searchParams: { foo: 'bar' } });
 
 	expect(output).toEqual('/blog/foo?foo=bar');
 });
@@ -43,7 +43,8 @@ test('returns pathname with search params if object is passed', () => {
 test('returns pathname with search params if URLSearchParams is passed', () => {
 	const { href } = typesafeBrowserRouter([{ path: '/blog', children: [{ path: '/blog/:postId' }] }]);
 
-	const output = href('/blog/:postId', {
+	const output = href({
+		path: '/blog/:postId',
 		params: { postId: 'foo' },
 		searchParams: new URLSearchParams({ foo: 'bar' }),
 	});
@@ -54,7 +55,7 @@ test('returns pathname with search params if URLSearchParams is passed', () => {
 test('returns pathname with hash', () => {
 	const { href } = typesafeBrowserRouter([{ path: '/blog', children: [{ path: '/blog/:postId' }] }]);
 
-	const output = href('/blog/:postId', { params: { postId: 'foo' }, hash: '#foo' });
+	const output = href({ path: '/blog/:postId', params: { postId: 'foo' }, hash: '#foo' });
 
 	expect(output).toEqual('/blog/foo#foo');
 });
@@ -155,7 +156,7 @@ test('typescript stress test with many routes and layers', () => {
 		},
 	]);
 
-	const output = href('/blog');
+	const output = href({ path: '/blog' });
 
 	expect(output).toEqual('/blog');
 });

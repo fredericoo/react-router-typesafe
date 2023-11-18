@@ -25,22 +25,21 @@ const joinValidWith =
 
 export const typesafeBrowserRouter = <R extends RouteObject>(routes: F.Narrow<R[]>) => {
 	function href<P extends ExtractPaths<R>>(
-		path: Extract<P, string>,
-		params?: PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
+		params: { path: Extract<P, string> } & PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {
 		// applies all params to the path
-		const replacedPath = params?.params
+		const path = params?.params
 			? Object.keys(params.params).reduce((path, param) => {
 					const value = params.params![param as keyof ExtractParams<P>];
 					if (typeof value !== 'string') throw new Error(`Route param ${param} must be a string`);
 					return path.replace(`:${param}`, value);
-			  }, path)
-			: path;
+			  }, params.path)
+			: params.path;
 
 		const searchParams = new URLSearchParams(params?.searchParams);
 		const hash = params?.hash?.replace(/^#/, '');
 
-		return joinValidWith('#')(joinValidWith('?')(replacedPath, searchParams.toString()), hash);
+		return joinValidWith('#')(joinValidWith('?')(path, searchParams.toString()), hash);
 	}
 
 	return {
