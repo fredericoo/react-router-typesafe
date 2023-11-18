@@ -155,7 +155,7 @@ test('typescript stress test with many routes and layers', () => {
 		},
 	]);
 
-	const output = href('/blog');
+	const output = href('/blog/:postId/:commentId/:replyId');
 
 	expect(output).toEqual('/blog');
 });

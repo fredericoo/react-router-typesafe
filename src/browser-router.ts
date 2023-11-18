@@ -1,6 +1,8 @@
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
 import { F } from 'ts-toolbelt';
 
+type Flatten<T> = { [K in keyof T]: T[K] } & {};
+
 type PathParams<T> = keyof T extends never ? { params?: never } : { params: T };
 
 type ExtractParam<Path, NextPart> = Path extends `:${infer Param}` ? Record<Param, string> & NextPart : NextPart;
@@ -24,12 +26,12 @@ const joinValidWith =
 export const typesafeBrowserRouter = <R extends RouteObject>(routes: F.Narrow<R[]>) => {
 	function href<P extends ExtractPaths<R>>(
 		path: Extract<P, string>,
-		params?: PathParams<ExtractParams<P>> & RouteExtraParams,
+		params?: PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {
 		// applies all params to the path
 		const replacedPath = params?.params
 			? Object.keys(params.params).reduce((path, param) => {
-					const value = (params.params as ExtractParams<P>)[param as keyof ExtractParams<P>];
+					const value = params.params![param as keyof ExtractParams<P>];
 					if (typeof value !== 'string') throw new Error(`Route param ${param} must be a string`);
 					return path.replace(`:${param}`, value);
 			  }, path)
