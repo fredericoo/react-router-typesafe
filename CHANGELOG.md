@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.4.3
+
+### Patch Changes
+
+- 1c5a838: Pathless routes with children now correctly infer their path
+
 ## 1.4.2
 
 ### Patch Changes
