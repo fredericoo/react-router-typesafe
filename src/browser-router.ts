@@ -1,7 +1,7 @@
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
 import { F } from 'ts-toolbelt';
 
-type PathParams<T> = keyof T extends never ? { pathParams?: never } : { pathParams: T };
+type PathParams<T> = keyof T extends never ? { params?: never } : { params: T };
 
 type ExtractParam<Path, NextPart> = Path extends `:${infer Param}` ? Record<Param, string> & NextPart : NextPart;
 
@@ -9,15 +9,9 @@ type ExtractParams<Path> = Path extends `${infer Segment}/${infer Rest}`
 	? ExtractParam<Segment, ExtractParams<Rest>>
 	: ExtractParam<Path, {}>;
 
-type PathWithParams<P extends string | undefined> = P extends string
-	? { path: P } & PathParams<ExtractParams<P>>
-	: never;
-
-type TypesafeRouteParams<Routes extends RouteObject[]> = {
-	[K in keyof Routes]: Routes[K] extends { children: infer C extends RouteObject[] }
-		? PathWithParams<Routes[K]['path']> | TypesafeRouteParams<C>
-		: PathWithParams<Routes[K]['path']>;
-}[number];
+type ExtractPaths<Route extends RouteObject> = Route extends { children: infer C extends RouteObject[] }
+	? Route['path'] | ExtractPaths<C[number]>
+	: Route['path'];
 
 type TypesafeSearchParams = Record<string, string> | URLSearchParams;
 export type RouteExtraParams = { hash?: string; searchParams?: TypesafeSearchParams };
@@ -28,20 +22,27 @@ const joinValidWith =
 		valid.filter(Boolean).join(separator);
 
 export const typesafeBrowserRouter = <R extends RouteObject>(routes: F.Narrow<R[]>) => {
+	function href<P extends ExtractPaths<R>>(
+		path: Extract<P, string>,
+		params?: PathParams<ExtractParams<P>> & RouteExtraParams,
+	) {
+		// applies all params to the path
+		const replacedPath = params?.params
+			? Object.keys(params.params).reduce((path, param) => {
+					const value = (params.params as ExtractParams<P>)[param as keyof ExtractParams<P>];
+					if (typeof value !== 'string') throw new Error(`Route param ${param} must be a string`);
+					return path.replace(`:${param}`, value);
+			  }, path)
+			: path;
+
+		const searchParams = new URLSearchParams(params?.searchParams);
+		const hash = params?.hash?.replace(/^#/, '');
+
+		return joinValidWith('#')(joinValidWith('?')(replacedPath, searchParams.toString()), hash);
+	}
+
 	return {
 		router: createBrowserRouter(routes as RouteObject[]),
-		href: (route: TypesafeRouteParams<R[]> & RouteExtraParams) => {
-			// applies all params to the path
-			const path = route.pathParams
-				? Object.keys(route.pathParams).reduce((path, param) => {
-						return path.replace(`:${param}`, route.pathParams![param as keyof typeof route.pathParams]);
-				  }, route.path)
-				: route.path;
-
-			const searchParams = new URLSearchParams(route.searchParams);
-			const hash = route.hash?.replace(/^#/, '');
-
-			return joinValidWith('#')(joinValidWith('?')(path, searchParams.toString()), hash);
-		},
+		href,
 	};
 };
