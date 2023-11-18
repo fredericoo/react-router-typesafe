@@ -1,5 +1,11 @@
 # react-router-typesafe
 
+## 1.4.2
+
+### Patch Changes
+
+- 41af0d5: Improve compiler performance for the `href` function returned by `typesafeBrowserRouter` by lazily calculating route params
+
 ## 1.4.1
 
 ### Patch Changes
