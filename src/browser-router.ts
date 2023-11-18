@@ -37,7 +37,9 @@ const joinValidWith =
 		valid.filter(Boolean).join(separator);
 
 export const typesafeBrowserRouter = <R extends RouteObject>(routes: NarrowArray<R>) => {
-	function href<P extends ExtractPaths<R>>(
+	type Paths = ExtractPaths<R>;
+
+	function href<P extends Paths>(
 		params: { path: Extract<P, string> } & PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {
 		// applies all params to the path
