@@ -1,5 +1,15 @@
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
-import { F } from 'ts-toolbelt';
+
+/** No deps implementation of F.Narrow from 'ts-toolbelt'  */
+type Try<A1 extends any, A2 extends any, Catch = never> = A1 extends A2 ? A1 : Catch;
+type Narrowable = string | number | bigint | boolean;
+type NarrowRaw<A> =
+	| (A extends [] ? [] : never)
+	| (A extends Narrowable ? A : never)
+	| {
+			[K in keyof A]: A[K] extends Function ? A[K] : NarrowRaw<A[K]>;
+	  };
+type Narrow<A extends any> = Try<A, [], NarrowRaw<A>>;
 
 type Flatten<T> = { [K in keyof T]: T[K] } & {};
 
@@ -23,7 +33,7 @@ const joinValidWith =
 	(...valid: any[]) =>
 		valid.filter(Boolean).join(separator);
 
-export const typesafeBrowserRouter = <R extends RouteObject>(routes: F.Narrow<R[]>) => {
+export const typesafeBrowserRouter = <R extends RouteObject>(routes: Narrow<R[]>) => {
 	function href<P extends ExtractPaths<R>>(
 		params: { path: Extract<P, string> } & PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {

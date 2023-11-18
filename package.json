@@ -48,7 +48,6 @@
     "prettier": "^3.0.0",
     "react": "^18.2.0",
     "react-router-dom": "^6.16.0",
-    "ts-toolbelt": "^9.6.0",
     "tsup": "^7.1.0",
     "typescript": "^5.1.6"
   },
