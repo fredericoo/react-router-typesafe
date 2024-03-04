@@ -85,7 +85,7 @@ import { href } from './router';
 
 const ProjectCard = (props: { id: string }) => {
 	return (
-		<Link to={href({ path: '/projects/:projectId', query: { projectId: props.id } })}>
+		<Link to={href({ path: '/projects/:projectId', params: { projectId: props.id } })}>
 			<p>Project {projectId}</p>
 		</Link>
 	);
