@@ -1,5 +1,6 @@
 import { test, expect } from 'bun:test';
 import { typesafeBrowserRouter } from '../browser-router';
+import { RouteObject } from 'react-router-dom';
 
 test('returns pathname with replaced params', () => {
 	const { href } = typesafeBrowserRouter([
@@ -7,6 +8,8 @@ test('returns pathname with replaced params', () => {
 	]);
 
 	const output = href({ path: '/blog/:postId/:commentId', params: { postId: 'foo', commentId: 'bar' } });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog/foo/bar');
 });
@@ -28,6 +31,8 @@ test('Returns right paths with pathless routes with children', () => {
 	]);
 
 	const output = href({ path: '/blog/:postId/:commentId', params: { postId: 'foo', commentId: 'bar' } });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog/foo/bar');
 });
@@ -36,6 +41,8 @@ test('returns pathname with search params if object is passed', () => {
 	const { href } = typesafeBrowserRouter([{ path: '/blog', children: [{ path: '/blog/:postId' }] }]);
 
 	const output = href({ path: '/blog/:postId', params: { postId: 'foo' }, searchParams: { foo: 'bar' } });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog/foo?foo=bar');
 });
@@ -48,6 +55,8 @@ test('returns pathname with search params if URLSearchParams is passed', () => {
 		params: { postId: 'foo' },
 		searchParams: new URLSearchParams({ foo: 'bar' }),
 	});
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog/foo?foo=bar');
 });
@@ -56,6 +65,8 @@ test('returns pathname with hash', () => {
 	const { href } = typesafeBrowserRouter([{ path: '/blog', children: [{ path: '/blog/:postId' }] }]);
 
 	const output = href({ path: '/blog/:postId', params: { postId: 'foo' }, hash: '#foo' });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog/foo#foo');
 });
@@ -157,6 +168,69 @@ test('typescript stress test with many routes and layers', () => {
 	]);
 
 	const output = href({ path: '/blog' });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
 
 	expect(output).toEqual('/blog');
+});
+
+test('works with pathless routes', () => {
+	const grandChildren = [{ element: null }, { path: '/blog/:postId/comments' }] as const satisfies RouteObject[];
+	const children = [{ children: grandChildren }] as const satisfies RouteObject[];
+
+	const { href } = typesafeBrowserRouter([{ path: '/blog', children }]);
+
+	const output = href({ path: '/blog/:postId/comments', params: { postId: 'asd' } });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
+
+	expect(output).toEqual('/blog/asd/comments');
+});
+
+test('can reference groups of routes by variable on several layers', () => {
+	const appRoutes = [
+		{
+			index: true,
+			element: null,
+		},
+		{
+			path: '/app/contact',
+			element: null,
+		},
+	] as const satisfies RouteObject[];
+
+	const { href } = typesafeBrowserRouter([
+		{
+			path: '/',
+			children: [
+				{
+					index: true,
+					element: null,
+				},
+				{
+					path: '/app',
+					element: null,
+					children: appRoutes,
+				},
+			],
+		},
+	]);
+
+	const output = href({ path: '/app/contact' });
+	// @ts-expect-error
+	const wrongOutput = href({ path: 'non-existing-route' });
+
+	expect(output).toEqual('/app/contact');
+});
+
+test('works with relative paths', () => {
+	const { href } = typesafeBrowserRouter([
+		{ path: '/', children: [{ path: 'blog', children: [{ path: ':postId', children: [{ path: 'comments' }] }] }] },
+	]);
+
+	const output = href({ path: '/blog/:postId/comments', params: { postId: 'asd' } });
+	// @ts-expect-error
+	const wrongOutput = href({ path: '/comments' });
+
+	expect(output).toEqual('/blog/asd/comments');
 });

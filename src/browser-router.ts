@@ -13,19 +13,25 @@ type PathParams<T> = keyof T extends never ? { params?: never } : { params: T };
 
 type ExtractParam<Path, NextPart> = Path extends `:${infer Param}` ? Record<Param, string> & NextPart : NextPart;
 
-type ExtractParams<Path> = Path extends `${infer Segment}/${infer Rest}`
-	? ExtractParam<Segment, ExtractParams<Rest>>
-	: ExtractParam<Path, {}>;
+type ExtractParams<Path> =
+	Path extends `${infer Segment}/${infer Rest}` ? ExtractParam<Segment, ExtractParams<Rest>> : ExtractParam<Path, {}>;
 
-type ExtractPaths<Route extends RouteObject> = Route extends {
-	children: infer C extends RouteObject[];
-	path: infer P extends string;
-}
-	? P | ExtractPaths<C[number]>
-	: Route extends { children: infer C extends RouteObject[] }
-	? ExtractPaths<C[number]>
-	: Route extends { path: infer P extends string }
-	? P
+type PrefixIfRelative<Path extends string, Prefix extends string> =
+	Path extends `/${string}` ? Path
+	: Prefix extends '' ? `/${Path}`
+	: Prefix extends '/' ? `${Prefix}${Path}`
+	: `${Prefix}/${Path}`;
+
+type ExtractPaths<Route extends RouteObject, Prefix extends string> =
+	Route extends (
+		{
+			children: infer C extends RouteObject[];
+			path: infer P extends string;
+		}
+	) ?
+		PrefixIfRelative<P, Prefix> | ExtractPaths<C[number], PrefixIfRelative<P, Prefix>>
+	: Route extends { children: infer C extends RouteObject[] } ? ExtractPaths<C[number], Prefix>
+	: Route extends { path: infer P extends string } ? PrefixIfRelative<P, Prefix>
 	: never;
 
 type TypesafeSearchParams = Record<string, string> | URLSearchParams;
@@ -36,20 +42,21 @@ const joinValidWith =
 	(...valid: any[]) =>
 		valid.filter(Boolean).join(separator);
 
-export const typesafeBrowserRouter = <R extends RouteObject>(routes: NarrowArray<R>) => {
-	type Paths = ExtractPaths<R>;
+export const typesafeBrowserRouter = <const R extends RouteObject>(routes: NarrowArray<R>) => {
+	type Paths = ExtractPaths<R, ''>;
 
 	function href<P extends Paths>(
 		params: { path: Extract<P, string> } & PathParams<Flatten<ExtractParams<P>>> & RouteExtraParams,
 	) {
 		// applies all params to the path
-		const path = params?.params
-			? Object.keys(params.params).reduce((path, param) => {
+		const path =
+			params?.params ?
+				Object.keys(params.params).reduce((path, param) => {
 					const value = params.params![param as keyof ExtractParams<P>];
 					if (typeof value !== 'string') throw new Error(`Route param ${param} must be a string`);
 					return path.replace(`:${param}`, value);
-			  }, params.path)
-			: params.path;
+				}, params.path)
+			:	params.path;
 
 		const searchParams = new URLSearchParams(params?.searchParams);
 		const hash = params?.hash?.replace(/^#/, '');

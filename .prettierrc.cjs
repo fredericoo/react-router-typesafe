@@ -4,4 +4,5 @@ module.exports = {
 	useTabs: true,
 	singleQuote: true,
 	endOfLine: 'auto',
+	experimentalTernaries: true,
 };
