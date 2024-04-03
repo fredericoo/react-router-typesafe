@@ -1,5 +1,15 @@
 # react-router-typesafe
 
+## 1.5.0
+
+### Minor Changes
+
+- a001404: typesafeBrowserRouter now infers correct paths for relative paths
+
+### Patch Changes
+
+- a001404: Fixed an issue where mixed paths with children and without would lead to flaky inference of paths
+
 ## 1.4.4
 
 ### Patch Changes
