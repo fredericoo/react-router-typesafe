@@ -16,7 +16,7 @@
     "@changesets/cli": "^2.26.2",
     "@happy-dom/global-registrator": "^11.0.6",
     "@testing-library/react": "^14.0.0",
-    "bun-types": "^1.0.1",
+    "@types/bun": "^1.0.12",
     "eslint": "^8.45.0",
     "expect-type": "^0.16.0",
     "happy-dom": "^11.0.6",

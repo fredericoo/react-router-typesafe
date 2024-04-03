@@ -17,8 +17,7 @@
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
 		"noImplicitAny": true,
-		"jsx": "react-jsx",
-		"types": ["bun-types"]
+		"jsx": "react-jsx"
 	},
 	"exclude": ["node_modules", "dist", "eslintrc.cjs"]
 }
