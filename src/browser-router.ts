@@ -1,3 +1,4 @@
+import type { unstable_DataStrategyFunction, FutureConfig, HydrationState } from '@remix-run/router';
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
 
 type Narrowable = string | number | bigint | boolean;
@@ -42,7 +43,15 @@ const joinValidWith =
 	(...valid: any[]) =>
 		valid.filter(Boolean).join(separator);
 
-export const typesafeBrowserRouter = <const R extends RouteObject>(routes: NarrowArray<R>) => {
+interface DOMRouterOpts {
+	basename?: string;
+	future?: Partial<Omit<FutureConfig, 'v7_prependBasename'>>;
+	hydrationData?: HydrationState;
+	unstable_dataStrategy?: unstable_DataStrategyFunction;
+	window?: Window;
+}
+
+export const typesafeBrowserRouter = <const R extends RouteObject>(routes: NarrowArray<R>, opts?: DOMRouterOpts) => {
 	type Paths = ExtractPaths<R, ''>;
 
 	function href<P extends Paths>(
@@ -65,7 +74,7 @@ export const typesafeBrowserRouter = <const R extends RouteObject>(routes: Narro
 	}
 
 	return {
-		router: createBrowserRouter(routes as RouteObject[]),
+		router: createBrowserRouter(routes as RouteObject[], opts),
 		href,
 	};
 };
