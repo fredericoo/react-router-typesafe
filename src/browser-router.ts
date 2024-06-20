@@ -42,7 +42,9 @@ const joinValidWith =
 	(...valid: any[]) =>
 		valid.filter(Boolean).join(separator);
 
-export const typesafeBrowserRouter = <const R extends RouteObject>(routes: NarrowArray<R>) => {
+type OptionsType = typeof createBrowserRouter extends (routes: unknown, opts: infer OptsType) => any ? OptsType : never;
+
+export const typesafeBrowserRouter = <const R extends RouteObject>(routes: NarrowArray<R>, opts?: OptionsType) => {
 	type Paths = ExtractPaths<R, ''>;
 
 	function href<P extends Paths>(
@@ -65,7 +67,7 @@ export const typesafeBrowserRouter = <const R extends RouteObject>(routes: Narro
 	}
 
 	return {
-		router: createBrowserRouter(routes as RouteObject[]),
+		router: createBrowserRouter(routes as RouteObject[], opts),
 		href,
 	};
 };

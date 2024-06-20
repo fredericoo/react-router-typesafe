@@ -234,3 +234,13 @@ test('works with relative paths', () => {
 
 	expect(output).toEqual('/blog/asd/comments');
 });
+
+test('allows basename option', () => {
+	const { href } = typesafeBrowserRouter([{ path: '/' }], {
+		basename: '/app',
+	});
+
+	const output = href({ path: '/' });
+
+	expect(output).toEqual('/');
+});
